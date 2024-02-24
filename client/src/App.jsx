@@ -1,4 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import logo from './assets/icon1.png';
 import { IoExit } from "react-icons/io5";
 import { IoMdSend } from "react-icons/io";
 import playerOne from './assets/player1.png';
@@ -33,6 +36,8 @@ const App = () => {
     //     soc.connect();
     // }
 
+    const [loading,setLoading] = useState(false);
+
     // joining a specific room
     const setCustomRoom = (e)=>{
         e.preventDefault();
@@ -40,7 +45,11 @@ const App = () => {
         const roomname = e.target.roomName.value;
         setRoomName(roomname);
         if(username){setMyName(username);}
-        if(!roomName) return;
+        if(!roomName) {
+            toast.error("Enter a room name.");
+            return;
+        }
+        setLoading(true);
         soc.connect();
         soc.emit('enterRoom',{roomname,username});
     }
@@ -60,6 +69,7 @@ const App = () => {
         setMyName('');
         setOpponentName('');
         setChat([]);
+        toast.message('Disconnected')
     }
 
     const restartGame = ()=>{
@@ -74,10 +84,12 @@ const App = () => {
         soc.on('status',(message)=>{
             if(message=='RoomFull'){
                 console.log('Room is Full');
+                toast.error('Room is Full');
                 setPlaying(false);
                 setWaiting(false);
             }else if(message=='startGame'){
                 console.log("Game started!");
+                toast.success('Game Started');
                 setWaiting(false);
                 setPlaying(true);
             }else if(message=='wait'){
@@ -96,7 +108,9 @@ const App = () => {
                 setGameResult('');
                 setGameState([0,1,2,3,4,5,6,7,8]);
                 setChat([]);
+                toast.message('Disconnected')
             }
+            setLoading(false);
         })
 
         soc.on('opponent',(name)=>{
@@ -194,23 +208,26 @@ const App = () => {
         
         return (
             <div className='min-h-screen min-w-full bg-neutral-800 text-white flex flex-col items-center justify-center gap-y-10'>
-                <div className='px-4 py-2 text-4xl font-bold text-center rounded-xl bg-pink-700'>Tic Tac Toe</div>
+                <div className='px-4 py-2 text-4xl font-bold text-center rounded-xl flex flex-col items-center bg-pink-700'>
+                    <img src={logo} alt="" className='size-20'/>
+                    <h1>Tic Tac Toe</h1>
+                </div>
 
-                <div className='p-2 flex flex-col items-center w-8/12 sm:w-6/12 md:w-5/12 lg:3/12 gap-y-3'>
+                <div className='p-2 flex flex-col items-center w-8/12 sm:w-6/12 md:w-4/12 lg:2/12 gap-y-3'>
 
                     <button className='w-full p-2 rounded-xl bg-neutral-600 transition-all hover:bg-pink-700' onClick={()=>setShowInput(prev=>!prev)}>Create or Join a room</button>
 
                     <div className={`w-full p-2 bg-neutral-600 rounded-xl ${!showInput ? "hidden" : ""}`}>
 
-                        <form onSubmit={setCustomRoom} className='flex flex-col gap-2'>
+                        <form onSubmit={!loading ? setCustomRoom : (e)=>{e.preventDefault();}} className='flex flex-col gap-2'>
                             <input type="text" name="userName" id="userName" className='rounded-lg text-black px-3 leading-10 w-full placeholder:text-center' placeholder='Enter your name'/>
                             <div className='flex w-full gap-2'>
                                 <input type="text" name="roomName" id="roomName" className='rounded-lg text-black px-3 leading-10 placeholder:text-center w-3/4' placeholder='Enter room name'/>
-                                <button type="submit" className='p-2 bg-pink-700 hover:bg-pink-800 rounded-lg w-1/4'>Join</button>
+                                <button type="submit" className={`p-2 bg-pink-700 hover:bg-pink-800 rounded-lg w-1/4 ${loading ? " cursor-not-allowed" : "cursor-pointer"}`}>Join</button>
                             </div>
                         </form>
-
                     </div>
+                    <div>{loading ? "Attempting to connect..." : ""}</div>
 
                     {/* <button className='w-full p-2 rounded-xl bg-neutral-600 transition-all hover:bg-pink-700' onClick={setRandomGame}>Play with random</button> */}
 
@@ -224,6 +241,7 @@ const App = () => {
                     </> */}
 
                 </div>
+                <ToastContainer/>
             </div>
         )
     }
@@ -308,6 +326,7 @@ const App = () => {
                     </div>
                 </div>
             </div>
+            <ToastContainer/>
         </div>
     )
 }
