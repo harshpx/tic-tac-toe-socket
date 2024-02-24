@@ -1,14 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 import logo from './assets/icon1.png';
-import { IoExit } from "react-icons/io5";
-import { IoMdSend } from "react-icons/io";
+import wallpaper from './assets/wall1.png';
 import playerOne from './assets/player1.png';
 import playerTwo from './assets/player2.png';
+
+import { IoExit } from "react-icons/io5";
+import { IoMdSend } from "react-icons/io";
 import Square from './components/Square.jsx';
 import decision from './features/gameLogic.js';
-import {socket as soc, socket} from './features/socket.js';
+import {socket as soc} from './features/socket.js';
 
 
 const App = () => {
@@ -56,8 +59,6 @@ const App = () => {
         setLoading(true);
         soc.connect();
         soc.emit('enterRoom',{roomname,username});
-        setUname('');
-        setRname('');
     }
 
     // leaving/disconnecting
@@ -239,7 +240,7 @@ const App = () => {
     if(!playing && !waiting){
         
         return (
-            <div className='min-h-screen min-w-full bg-neutral-800 text-white flex flex-col items-center justify-center gap-y-10'>
+            <div className='min-h-screen min-w-full bg-neutral-800 text-white flex flex-col items-center justify-center gap-y-10' style={{backgroundImage:`url(${wallpaper})`, backgroundPosition:'center'}}>
                 <div className='px-4 py-2 text-4xl font-bold text-center rounded-xl flex flex-col items-center bg-pink-700'>
                     <img src={logo} alt="" className='size-20'/>
                     <h1>Tic Tac Toe</h1>
