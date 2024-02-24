@@ -39,19 +39,25 @@ const App = () => {
     const [loading,setLoading] = useState(false);
 
     // joining a specific room
+
+    const [uname,setUname] = useState('');
+    const [rname,setRname] = useState('');
+
     const setCustomRoom = (e)=>{
         e.preventDefault();
-        const username = e.target.userName.value;
-        const roomname = e.target.roomName.value;
+        const username = uname;
+        const roomname = rname;
         setRoomName(roomname);
         if(username){setMyName(username);}
-        if(!roomName) {
-            toast.error("Enter a room name.");
+        if(roomName=='') {
+            toast.error("Enter a room name");
             return;
         }
         setLoading(true);
         soc.connect();
         soc.emit('enterRoom',{roomname,username});
+        setUname('');
+        setRname('');
     }
 
     // leaving/disconnecting
@@ -128,6 +134,11 @@ const App = () => {
         soc.on('resetChat',()=>{
             setChat([]);
         })
+        window.addEventListener('beforeunload',disconnect);
+
+        return ()=>{
+            window.removeEventListener('beforeunload',disconnect);
+        }
     },[soc])
 
     useEffect(()=>{
@@ -135,6 +146,11 @@ const App = () => {
             setMyID(id);
         })
         console.log(myID);
+        window.addEventListener('beforeunload',disconnect);
+
+        return ()=>{
+            window.removeEventListener('beforeunload',disconnect);
+        }
     },[soc,myID])
 
     useEffect(()=>{
@@ -142,6 +158,11 @@ const App = () => {
             setGameResult('');
             setGameCount(prev=>prev+1);
         })
+        window.addEventListener('beforeunload',disconnect);
+
+        return ()=>{
+            window.removeEventListener('beforeunload',disconnect);
+        }
     },[soc])
 
     useEffect(()=>{
@@ -158,6 +179,11 @@ const App = () => {
         soc.on('turn',(myTurn)=>{
             setTurn(myTurn);
         })
+        window.addEventListener('beforeunload',disconnect);
+
+        return ()=>{
+            window.removeEventListener('beforeunload',disconnect);
+        }
     },[soc,waiting])
 
 
@@ -192,6 +218,12 @@ const App = () => {
             setChat(prevChats=>removeDuplicates(prevChats));
             // ref.current.innerHTML+=`<div className="rounded-lg rounded-tl-none px-1 py-0.5 bg-neutral-800">${text}</div>`
         })
+
+        window.addEventListener('beforeunload',disconnect);
+
+        return ()=>{
+            window.removeEventListener('beforeunload',disconnect);
+        }
     },[soc])
 
 
@@ -220,9 +252,9 @@ const App = () => {
                     <div className={`w-full p-2 bg-neutral-600 rounded-xl ${!showInput ? "hidden" : ""}`}>
 
                         <form onSubmit={!loading ? setCustomRoom : (e)=>{e.preventDefault();}} className='flex flex-col gap-2'>
-                            <input type="text" name="userName" id="userName" className='rounded-lg text-black px-3 leading-10 w-full placeholder:text-center' placeholder='Enter your name'/>
+                            <input type="text" value={uname} onChange={(e)=>{setUname(String(e.target.value))}} name="userName" id="userName" className='rounded-lg text-black px-3 leading-10 w-full placeholder:text-center' placeholder='Enter your name'/>
                             <div className='flex w-full gap-2'>
-                                <input type="text" name="roomName" id="roomName" className='rounded-lg text-black px-3 leading-10 placeholder:text-center w-3/4' placeholder='Enter room name'/>
+                                <input type="text" value={rname} onChange={(e)=>{setRname(String(e.target.value))}} name="roomName" id="roomName" className='rounded-lg text-black px-3 leading-10 placeholder:text-center w-3/4' placeholder='Enter room name'/>
                                 <button type="submit" className={`p-2 bg-pink-700 hover:bg-pink-800 rounded-lg w-1/4 ${loading ? " cursor-not-allowed" : "cursor-pointer"}`}>Join</button>
                             </div>
                         </form>

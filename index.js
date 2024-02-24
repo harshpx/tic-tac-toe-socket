@@ -26,11 +26,17 @@ const io = new Server(server,{
 const playersInRooms = new Map();
 const playerInfo = new Map();
 
+setInterval(()=>{
+    playerInfo.clear();
+    playersInRooms.clear();
+},20*60*1000);
+
 io.on('connection', (socket)=>{
 
     console.log(`A user connected: ${socket.id}`);
 
     let socketTimeOut;
+    let resetInv;
 
     const InactivityTimeout = (time)=>{
         return setTimeout(() => {
@@ -54,6 +60,12 @@ io.on('connection', (socket)=>{
     }
 
     socket.on('enterRoom', ({roomname,username})=>{
+
+        resetInv = setInterval(()=>{
+            playersInRooms.delete(roomname)
+        },10*60*1000);
+
+
         if(!playersInRooms.has(roomname)){
 
             playersInRooms.set(roomname, new Set());
