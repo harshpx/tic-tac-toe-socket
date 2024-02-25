@@ -53,7 +53,6 @@ const App = () => {
         setRoomName(roomname);
         if(username){setMyName(username);}
         if(roomName=='') {
-            toast.error("Enter a room name");
             return;
         }
         setLoading(true);
@@ -76,7 +75,7 @@ const App = () => {
         setMyName('');
         setOpponentName('');
         setChat([]);
-        toast.message('Disconnected')
+        toast.success('Disconnected')
     }
 
     const restartGame = ()=>{
@@ -102,6 +101,7 @@ const App = () => {
             }else if(message=='wait'){
                 console.log('waiting for other player...');
                 setWaiting(true);
+                toast.success('Waiting for other player');
                 setOpponentName('Opponent')
                 setPlaying(false);
             }else if(message=='disconnected'){
@@ -115,7 +115,7 @@ const App = () => {
                 setGameResult('');
                 setGameState([0,1,2,3,4,5,6,7,8]);
                 setChat([]);
-                toast.message('Disconnected')
+                toast.success('Disconnected')
             }
             setLoading(false);
         })
@@ -241,6 +241,7 @@ const App = () => {
         
         return (
             <div className='min-h-screen min-w-full bg-neutral-800 text-white flex flex-col items-center justify-center gap-y-10' style={{backgroundImage:`url(${wallpaper})`, backgroundPosition:'center'}}>
+                <div className='absolute bottom-4'>Made with &hearts; by Harsh Priye</div>
                 <div className='px-4 py-2 text-4xl font-bold text-center rounded-xl flex flex-col items-center bg-pink-700'>
                     <img src={logo} alt="" className='size-20'/>
                     <h1>Tic Tac Toe</h1>
