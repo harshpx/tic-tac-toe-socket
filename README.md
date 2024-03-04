@@ -13,7 +13,7 @@
 * Blazing fast response
 * Responsive UI (looks awesome on all devices)
 * Smart lobby management
-* In-Game chat available
+* In-Game chat
 
 ## Screenshots
 <img src="./client/src/assets/tic-tac-toe.png" style="border-radius:20px"/>
