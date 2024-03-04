@@ -5,9 +5,9 @@
 
 ### Mini Tic-Tac-Toe is a socket based, 2-player game with in-game chat functionality and an amazing UI.
 
-### Try it on: [https://mini-tic-tac-toe.vercel.app](https://mini-tic-tac-toe.vercel.app)
+#### Try it on: [https://mini-tic-tac-toe.vercel.app](https://mini-tic-tac-toe.vercel.app)
 
-### <b>Tech Stack:</b> Socket.io, Express JS, React JS, Tailwind CSS
+#### Tech Stack: Socket.io, Express JS, React JS, Tailwind CSS
 
 ## Features
 * Blazing fast response
