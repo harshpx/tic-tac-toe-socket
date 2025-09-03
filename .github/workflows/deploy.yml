@@ -1,0 +1,37 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "[INFO] Cloning latest code..."
+            rm -rf tic-tac-toe-socket
+            git clone https://github.com/harshpx/tic-tac-toe-socket.git
+            cd tic-tac-toe-socket
+
+            echo "[INFO] Performing an existing docker container cleanup..."
+            docker stop tic-tac-toe-server || true
+            docker rm -f tic-tac-toe-server || true
+
+            echo "[INFO] Building tic-tac-toe-server..."
+            docker build -t tic-tac-toe-server .
+
+            echo "[INFO] Starting tic-tac-toe-server container..."
+            docker run -d \
+              --name tic-tac-toe-server \
+              -p 8080:8080 tic-tac-toe-server
+
+            echo "[INFO] Deployment complete."
