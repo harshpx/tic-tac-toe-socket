@@ -32,6 +32,6 @@ jobs:
             echo "[INFO] Starting tic-tac-toe-server container..."
             docker run -d \
               --name tic-tac-toe-server \
-              -p 8080:8080 tic-tac-toe-server
+              -p 5002:5002 tic-tac-toe-server
 
             echo "[INFO] Deployment complete."
